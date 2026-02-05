@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FocusFlow – Plan Your Day</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="CSS/reset.css" />
+    <link rel="stylesheet" href="CSS/main.css" />
+</head>
+<body>
+
+    <header>
+        <h1>FocusFlow</h1>
+        <p>Do what you planned. Not what distracts you.</p>
+    </header>
+
+    <main>
+        <!-- Add Task Section -->
+        <section id="add-task">
+            <h2>Plan Your Day</h2>
+
+            <input type="time" id="task-time" />
+            <input type="text" id="task-text" placeholder="What should you be doing?" />
+            <button id="add-btn">Add</button>
+        </section>
+
+        <!-- Current Task -->
+        <section id="current-task">
+            <h2>Right Now</h2>
+            <p id="active-task">No task right now</p>
+        </section>
+
+        <!-- Daily Schedule -->
+        <section id="schedule">
+            <h2>Today’s Plan</h2>
+            <ul id="task-list"></ul>
+        </section>
+    </main>
+
+    <!-- JS -->
+    <script type="module" src="JS/app.js"></script>
+</body>
+</html>
