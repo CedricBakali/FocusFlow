@@ -7,7 +7,8 @@ export function addTask(time, text) {
     const task = {
         id: Date.now(),
         time,
-        text
+        text,
+        completed: false
     };
 
     schedule.push(task);
@@ -25,3 +26,25 @@ export function setSchedule(data) {
 export function getSchedule() {
     return schedule;
 }
+
+export function toggleTaskCompletion(taskId) {
+    schedule = schedule.map(task => {
+        if (task.id === taskId) {
+            return { ...task, completed: !task.completed };
+        }
+        return task;
+    });
+
+    saveSchedule(schedule);
+}
+
+export function getDailyScore() {
+    const total = schedule.length;
+    const completed = schedule.filter(task => task.completed).length;
+
+    return {
+        completed,
+        total
+    };
+}
+
