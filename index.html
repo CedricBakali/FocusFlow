@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="CSS/main.css" />
 </head>
 <body>
+    <button id="theme-toggle" title="Toggle light/dark mode">🌙</button>
 
     <header>
         <h1>FocusFlow</h1>
@@ -21,8 +22,8 @@
         <section id="add-task">
             <h2>Plan Your Day</h2>
 
-            <input type="time" id="task-time" />
-            <input type="text" id="task-text" placeholder="What should you be doing?" />
+            <input type="time" id="taskTime" />
+            <input type="text" id="taskInput" placeholder="What should you be doing?" />
             <button id="add-btn">Add</button>
         </section>
 
@@ -33,10 +34,16 @@
         </section>
 
         <!-- Daily Schedule -->
-        <div id="daily-score">
-            <strong>Today:</strong>
-            <span id="score-text">0 / 0 completed</span>
-        </div>
+        <section id = "score">
+            <div id="daily-score">
+                <strong>Today:</strong>
+                <span id="score-text">0 / 0 completed</span>
+            </div>
+
+            <div id = "progress-container">
+                <div id = "progress-bar"></div>
+            </div>
+        </section>
 
         <div id="streak">
     🔥      Streak: <span id="streak-count">0</span> days
@@ -48,9 +55,34 @@
             <h2>Today’s Plan</h2>
             <ul id="task-list"></ul>
         </section>
+
+        <div id="focus-mode" class="hidden is-work">
+        <div id="focus-phase-label">Focus</div>
+        <div id="focus-timer">25:00</div>
+        <div id="focus-task"></div>
+        <div id="focus-cycle-count">Cycle 0</div>
+
+        <button id="pause-focus">Pause</button>
+        <button id="exit-focus">Exit</button>
+        </div>
     </main>
 
     <!-- JS -->
     <script type="module" src="JS/app.js"></script>
+    <script>
+        const toggle = document.getElementById('theme-toggle');
+        const saved = localStorage.getItem('ff-theme');
+        if (saved === 'light') { document.body.classList.add('light'); toggle.textContent = '☀️'; }
+
+        toggle.addEventListener('click', () => {
+            const isLight = document.body.classList.toggle('light');
+            toggle.textContent = isLight ? '☀️' : '🌙';
+            localStorage.setItem('ff-theme', isLight ? 'light' : 'dark');
+        });
+    </script>
+
+    <footer class ="footer">
+        <p> &copy; 2026 <span class ="brand">TwentyTwo Creations</span>  | Developed by Cibah22</p>
+    </footer>
 </body>
 </html>

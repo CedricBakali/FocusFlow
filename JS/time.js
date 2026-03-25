@@ -1,65 +1,71 @@
 import { getSchedule } from "./schedule.js";
 import { highlightCurrentTask } from "./ui.js";
+import { notifyTaskStart } from "./notify.js";
 
-if (Notification.permission !== "granted") {
-    Notification.requestPermission().then(permission => {
-        console.log("Notification permission:", permission);
-        if (permission === "granted") {
-            console.log("Notifications enabled!");
-        } else {
-            console.log("Notifications blocked!");
-        }
-    });
-}
-
-
+let lastActiveTaskId = null;
 
 export function startTimeWatcher() {
     checkCurrentTask();
-    setInterval(checkCurrentTask, 60000); // every minute
+    setInterval(checkCurrentTask, 60000); // every 1 minute
+}
+
+export function startMidnightWatcher() {
+    setInterval(() => {
+        const now = new Date();
+        if (now.getHours() === 0 && now.getMinutes() === 0) {
+            location.reload();
+        }
+    }, 60000);
 }
 
 function checkCurrentTask() {
     const now = new Date();
-    const currentTime = now.toTimeString().slice(0, 5); // HH:MM
-
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
     const tasks = getSchedule();
-    let currentTask = null;
 
-    for (let i = 0; i < tasks.length; i++) {
-        if (tasks[i].time <= currentTime) {
-            currentTask = tasks[i];
-        }
-    }
-
-    updateCurrentTask(currentTask);
-}
-
-function updateCurrentTask(task) {
-    const display = document.getElementById("active-task");
-
-    if (!task) {
-        display.textContent = "No task right now";
+    if (tasks.length === 0) {
+        highlightCurrentTask(null);
+        updateCurrentTaskDisplay(null);
         return;
     }
 
-    display.textContent = `${task.time} — ${task.text}`;
+    const tasksWithMinutes = tasks.map(task => {
+        const [hours, minutes] = task.time.split(":").map(Number);
+        return { ...task, totalMinutes: hours * 60 + minutes };
+    });
 
-    // Only notify if permission granted
-    if (Notification.permission === "granted") {
-        // Use a custom property to avoid repeating
-        if (!task.notified) {
-            new Notification("FocusFlow Reminder", {
-                body: `Time to: ${task.text}`,
-            });
-            task.notified = true;
+    let activeTask = null;
+
+    for (let i = 0; i < tasksWithMinutes.length; i++) {
+        const current = tasksWithMinutes[i];
+        const next = tasksWithMinutes[i + 1];
+
+        if (
+            currentMinutes >= current.totalMinutes &&
+            (!next || currentMinutes < next.totalMinutes)
+        ) {
+            activeTask = current;
+            break;
         }
     }
 
-    
+    if (activeTask) {
+        highlightCurrentTask(activeTask.id);
+        updateCurrentTaskDisplay(activeTask);
 
-    highlightCurrentTask(task ? task.id : null);
-
+        if (lastActiveTaskId !== activeTask.id) {
+            notifyTaskStart(activeTask);
+            lastActiveTaskId = activeTask.id;
+        }
+    } else {
+        highlightCurrentTask(null);
+        updateCurrentTaskDisplay(null);
+        lastActiveTaskId = null;
+    }
 }
 
-
+function updateCurrentTaskDisplay(task) {
+    const display = document.getElementById("active-task");
+    if (!display) return;
+    display.textContent = task ? `${task.time} — ${task.text}` : "No task right now";
+}

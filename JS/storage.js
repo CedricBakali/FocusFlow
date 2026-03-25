@@ -32,8 +32,8 @@ export function getStreak() {
 }
 
 export function updateStreak(hasCompletedTaskToday) {
-    const today = new Date().toDateString();
-    const lastDate = localStorage.getItem(LAST_DATE_KEY);
+    const today = getTodayDate();
+    const lastDate = getLastActiveDate();
     let streak = getStreak();
 
     if (!hasCompletedTaskToday) return;
@@ -43,8 +43,9 @@ export function updateStreak(hasCompletedTaskToday) {
     if (lastDate) {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayISO = yesterday.toISOString().split("T")[0];
 
-        if (lastDate === yesterday.toDateString()) {
+        if (lastDate === yesterdayISO) {
             streak += 1;
         } else {
             streak = 1;
@@ -54,5 +55,17 @@ export function updateStreak(hasCompletedTaskToday) {
     }
 
     localStorage.setItem(STREAK_KEY, streak);
-    localStorage.setItem(LAST_DATE_KEY, today);
+    setLastActiveDate(today);
+}
+
+export function getTodayDate(){
+    return new Date().toISOString().split("T")[0];
+}
+
+export function getLastActiveDate(){
+    return localStorage.getItem("lastActiveDate");
+}
+
+export function setLastActiveDate(Date){
+    localStorage.setItem("lastActiveDate",Date);
 }

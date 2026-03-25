@@ -1,9 +1,19 @@
-import { initUI } from "./ui.js";
+import { initUI, renderTasks } from "./ui.js";
 import { loadSchedule } from "./storage.js";
-import { startTimeWatcher } from "./time.js";
+import { startTimeWatcher, startMidnightWatcher } from "./time.js";
+import { checkForNewDay, getDailyScore } from "./schedule.js";
+import { requestNotificationPermission } from "./notify.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-    initUI();
+    requestNotificationPermission();
     loadSchedule();
-    startTimeWatcher();
+    checkForNewDay();
+    initUI();
+    renderTasks();
+
+    setTimeout(() => {
+        getDailyScore();
+        startTimeWatcher();
+        startMidnightWatcher();
+    }, 100);
 });

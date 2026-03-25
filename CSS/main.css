@@ -1,0 +1,503 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&display=swap');
+
+/* ─── Dark mode (default) ────────────────────────────────── */
+:root {
+    --bg:           #0f0f0f;
+    --bg-card:      #171717;
+    --bg-elevated:  #1f1f1f;
+    --border:       #2a2a2a;
+    --border-hover: #3a3a3a;
+    --accent:       #E2773A;
+    --accent-dark:  #c45e25;
+    --accent-glow:  rgba(226, 119, 58, 0.15);
+    --green:        #22c55e;
+    --amber:        #FFCB66;
+    --text-primary: #f0ede8;
+    --text-muted:   #6b6b6b;
+    --text-soft:    #a0a0a0;
+    --radius:       10px;
+    --radius-lg:    16px;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body:    'Barlow', sans-serif;
+    --transition:   0.18s ease;
+    --focus-work-bg:  #0a0a0a;
+    --focus-break-bg: #0d0d08;
+    --color-scheme: dark;
+}
+
+/* ─── Light mode ─────────────────────────────────────────── */
+body.light {
+    --bg:           #fFFFFF;
+    --bg-card:      #fcefd3;
+    --bg-elevated:  #ffe299;
+    --border:       rgba(176, 100, 20, 0.25);
+    --border-hover: rgba(176, 100, 20, 0.45);
+    --accent:       #E2773A;
+    --accent-dark:  #c45e25;
+    --accent-glow:  rgba(226, 119, 58, 0.18);
+    --green:        #1a9e4a;
+    --amber:        #b05a10;
+    --text-primary: #2a1a06;
+    --text-muted:   #9a6020;
+    --text-soft:    #7a4a18;
+    --focus-work-bg:  #FFCB66;
+    --focus-break-bg: #d4f0dc;
+    --color-scheme: light;
+}
+
+/* ─── Base ───────────────────────────────────────────────── */
+body {
+    background-color: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 400;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    color-scheme: var(--color-scheme);
+}
+
+/* ─── Theme toggle ───────────────────────────────────────── */
+#theme-toggle {
+    position: fixed;
+    top: 1.25rem;
+    right: 1.25rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-soft);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition), transform var(--transition);
+    z-index: 50;
+}
+#theme-toggle:hover {
+    border-color: var(--accent);
+    transform: rotate(20deg);
+}
+
+/* ─── Header ─────────────────────────────────────────────── */
+header {
+    padding: 3rem 2rem 2rem;
+    max-width: 680px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+    animation: fadeDown 0.5s ease both;
+}
+
+header h1 {
+    font-family: var(--font-display);
+    font-size: 52px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+header p {
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* ─── Main layout ────────────────────────────────────────── */
+main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ─── Section headings ───────────────────────────────────── */
+section h2 {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+/* ─── Add Task ───────────────────────────────────────────── */
+#add-task {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    display: grid;
+    grid-template-areas:
+        "label label label"
+        "time  input btn";
+    grid-template-columns: 130px 1fr auto;
+    grid-template-rows: auto 44px;
+    gap: 12px 10px;
+    align-items: center;
+    animation: fadeUp 0.4s ease 0.1s both;
+}
+
+#add-task h2  { grid-area: label; margin-bottom: 0; }
+#taskTime     { grid-area: time;  height: 44px; }
+#taskInput    { grid-area: input; height: 44px; }
+#add-btn      { grid-area: btn; }
+
+#taskTime,
+#taskInput {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    padding: 0 14px;
+    font-size: 14px;
+    transition: border-color var(--transition);
+}
+
+#taskTime { color-scheme: var(--color-scheme); }
+
+#taskTime:focus,
+#taskInput:focus { border-color: var(--accent); }
+
+#taskInput::placeholder { color: var(--text-muted); }
+
+#add-btn {
+    height: 44px;
+    padding: 0 22px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: var(--radius);
+    font-family: var(--font-display);
+    font-size: 18px;
+    letter-spacing: 1px;
+    transition: background var(--transition), transform var(--transition);
+}
+#add-btn:hover  { background: var(--accent-dark); }
+#add-btn:active { transform: scale(0.97); }
+
+/* ─── Current Task ───────────────────────────────────────── */
+#current-task {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    animation: fadeUp 0.4s ease 0.2s both;
+}
+
+#active-task {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-top: 4px;
+}
+
+/* ─── Score & Progress ───────────────────────────────────── */
+#score {
+    animation: fadeUp 0.4s ease 0.25s both;
+}
+
+#daily-score {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#daily-score strong {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+#score-text {
+    font-family: var(--font-display);
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: var(--text-soft);
+}
+
+#progress-container {
+    height: 6px;
+    background: var(--bg-elevated);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+#progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.5s ease;
+}
+
+/* ─── Streak ─────────────────────────────────────────────── */
+#streak {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--amber);
+    letter-spacing: 0.5px;
+    width: fit-content;
+    animation: fadeUp 0.4s ease 0.3s both;
+}
+
+#streak-count {
+    font-family: var(--font-display);
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* ─── Schedule / Task List ───────────────────────────────── */
+#schedule {
+    animation: fadeUp 0.4s ease 0.35s both;
+}
+
+#task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#task-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    transition: border-color var(--transition), background var(--transition);
+    animation: fadeUp 0.3s ease both;
+}
+
+#task-list li:hover {
+    border-color: var(--border-hover);
+    background: var(--bg-elevated);
+}
+
+#task-list li span {
+    flex: 1;
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+#task-list li span strong {
+    font-family: var(--font-display);
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    color: var(--accent);
+    margin-right: 4px;
+}
+
+/* Task buttons */
+#task-list li button {
+    height: 32px;
+    padding: 0 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: background var(--transition), color var(--transition), transform var(--transition);
+    flex-shrink: 0;
+}
+#task-list li button:active { transform: scale(0.96); }
+
+/* Done / Undo */
+#task-list li button:nth-of-type(1) {
+    background: transparent;
+    border: 1px solid var(--green);
+    color: var(--green);
+}
+#task-list li button:nth-of-type(1):hover {
+    background: rgba(34, 197, 94, 0.12);
+}
+
+/* Focus */
+#task-list li button:nth-of-type(2) {
+    background: var(--accent);
+    color: #fff;
+}
+#task-list li button:nth-of-type(2):hover { background: var(--accent-dark); }
+
+/* Delete */
+#task-list li button:nth-of-type(3) {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+}
+#task-list li button:nth-of-type(3):hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Highlighted active task */
+#task-list li[style*="backgroundColor"] {
+    border-color: var(--amber) !important;
+    background: rgba(255, 203, 102, 0.1) !important;
+}
+
+/* ─── Focus Mode ─────────────────────────────────────────── */
+#focus-mode {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: var(--focus-work-bg);
+    z-index: 100;
+    transition: background 0.6s ease;
+}
+
+#focus-mode.hidden { display: none; }
+
+#focus-mode.is-break { background: var(--focus-break-bg); }
+
+#focus-phase-label {
+    font-family: var(--font-display);
+    font-size: 18px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    transition: color 0.6s ease;
+}
+#focus-mode.is-break #focus-phase-label { color: var(--green); }
+
+#focus-timer {
+    font-family: var(--font-display);
+    font-size: clamp(80px, 18vw, 140px);
+    letter-spacing: 6px;
+    line-height: 1;
+    color: var(--text-primary);
+    transition: color 0.6s ease;
+}
+#focus-mode.is-break #focus-timer { color: var(--green); }
+
+#focus-task {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-soft);
+    max-width: 420px;
+    text-align: center;
+    padding: 0 2rem;
+    line-height: 1.5;
+}
+
+#focus-cycle-count {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 6px 16px;
+}
+
+#focus-mode button {
+    height: 44px;
+    padding: 0 28px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: background var(--transition), transform var(--transition);
+}
+#focus-mode button:active { transform: scale(0.97); }
+
+#pause-focus {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    margin-top: 1rem;
+}
+#pause-focus:hover { background: var(--border-hover); }
+
+#exit-focus {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+}
+#exit-focus:hover { background: var(--accent-glow); }
+
+/* ─── Animations ─────────────────────────────────────────── */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Responsive ─────────────────────────────────────────── */
+@media (max-width: 520px) {
+    header { padding: 2rem 1.25rem 1.5rem; }
+    header h1 { font-size: 40px; }
+    main { padding: 1.25rem; gap: 1.25rem; }
+
+    #add-task {
+        grid-template-areas:
+            "label label"
+            "time  time"
+            "input input"
+            "btn   btn";
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto auto;
+    }
+
+    #taskTime { width: 100%; }
+    #add-btn  { width: 100%; }
+}
+
+#progress-container{
+    width: 100%;
+    height: 12px;
+    background: #ddd;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+#progress-bar{
+    width: 0;
+    height: 100%;background: #4CAF50;
+    transition:  width 0.3s ease;
+}
+
+#focus-mode.is-work #focus-phase-label { color: #E24B4A; }  /* red for work */
+#focus-mode.is-break #focus-phase-label { color: #1D9E75; } /* green for break */
+
+.footer {
+    text-align: center;
+    padding: 15px;
+    background: #3a240a;
+    color: #94a3b8;
+    font-size: 14px;
+    width: 100%;
+}
+
+.brand {
+    color : #22c55e;
+ 
+}
