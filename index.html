@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FocusFlow – Plan Your Day</title>
 
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="icons/favicon.ico" />
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png" />
+    <meta name="theme-color" content="#E2773A" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="FocusFlow" />
+    <meta name="description" content="Plan your day. Do what you planned. Not what distracts you." />
+
     <!-- CSS -->
     <link rel="stylesheet" href="CSS/reset.css" />
     <link rel="stylesheet" href="CSS/main.css" />
@@ -79,6 +89,13 @@
             toggle.textContent = isLight ? '☀️' : '🌙';
             localStorage.setItem('ff-theme', isLight ? 'light' : 'dark');
         });
+
+        // Service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(() => console.log('FocusFlow SW registered'))
+                .catch(err => console.warn('SW registration failed:', err));
+        }
     </script>
 
     <footer class ="footer">
