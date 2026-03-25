@@ -1,12 +1,26 @@
-const TOAST_DURATION = 4000;
+const TOAST_DURATION = 5000;
 
-/**
- * Request notification permission on load.
- * Called once from app.js at startup.
- */
+// Detect if browser notifications actually work
+// Mobile browsers often report "granted" but silently drop notifications
+function canUseNativeNotifications() {
+    if (!("Notification" in window)) return false;
+    if (Notification.permission !== "granted") return false;
+
+    // iOS Safari never supports notifications reliably — always use toast
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    if (isIOS) return false;
+
+    // Android requires the app to be installed as PWA for notifications
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches
+        || window.navigator.standalone === true;
+    const isAndroid = /android/i.test(navigator.userAgent);
+    if (isAndroid && !isStandalone) return false;
+
+    return true;
+}
+
 export function requestNotificationPermission() {
     if (!("Notification" in window)) return;
-
     if (Notification.permission === "default") {
         Notification.requestPermission().then(permission => {
             console.log("Notification permission:", permission);
@@ -14,45 +28,26 @@ export function requestNotificationPermission() {
     }
 }
 
-/**
- * Send a notification for a task.
- * Uses browser Notification API if granted, falls back to in-app toast.
- *
- * @param {string} title  - Notification heading
- * @param {string} body   - Notification body text
- */
 export function sendNotification(title, body) {
-    if (Notification.permission === "granted") {
-        new Notification(title, { body });
-    } else {
-        showToast(`${title}: ${body}`);
+    // Always show toast on mobile — also show native on desktop if granted
+    if (canUseNativeNotifications()) {
+        new Notification(title, { body, icon: "/icons/icon-192x192.png" });
     }
+    // Always show toast — it's the only reliable cross-device alert
+    showToast(title, body);
 }
 
-/**
- * Notify that a scheduled task is now active.
- * @param {{ time: string, text: string }} task
- */
 export function notifyTaskStart(task) {
     sendNotification("FocusFlow Reminder", `Time to: ${task.text} at ${task.time}`);
 }
 
-/**
- * Notify when the day's score is complete.
- * @param {number} completed
- * @param {number} total
- */
 export function notifyDayComplete(completed, total) {
     if (completed === total && total > 0) {
         sendNotification("FocusFlow", `You crushed it! All ${total} tasks done today.`);
     }
 }
 
-/**
- * Show a small in-app toast banner (fallback when notifications are blocked).
- * @param {string} message
- */
-function showToast(message) {
+function showToast(title, body) {
     let container = document.getElementById("ff-toast-container");
 
     if (!container) {
@@ -64,40 +59,52 @@ function showToast(message) {
             right: 24px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             z-index: 9999;
             pointer-events: none;
+            max-width: 320px;
         `;
         document.body.appendChild(container);
     }
 
     const toast = document.createElement("div");
-    toast.textContent = message;
     toast.style.cssText = `
-        background: #2C2C2A;
-        color: #fff;
-        padding: 12px 18px;
-        border-radius: 8px;
-        font-size: 14px;
-        font-family: sans-serif;
-        max-width: 300px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        opacity: 0;
-        transform: translateY(8px);
-        transition: opacity 0.2s ease, transform 0.2s ease;
+        background: #1f1f1f;
+        border: 1px solid #E2773A;
+        border-left: 4px solid #E2773A;
+        color: #f0ede8;
+        padding: 14px 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-family: 'Barlow', sans-serif;
         pointer-events: auto;
+        opacity: 0;
+        transform: translateX(16px);
+        transition: opacity 0.25s ease, transform 0.25s ease;
+        cursor: pointer;
     `;
+
+    toast.innerHTML = `
+        <div style="font-weight:600; font-size:13px; color:#E2773A; margin-bottom:4px;">${title}</div>
+        <div style="color:#a0a0a0; font-size:13px; line-height:1.4;">${body}</div>
+    `;
+
+    // Tap to dismiss
+    toast.addEventListener("click", () => dismiss(toast));
 
     container.appendChild(toast);
 
     requestAnimationFrame(() => {
         toast.style.opacity = "1";
-        toast.style.transform = "translateY(0)";
+        toast.style.transform = "translateX(0)";
     });
 
-    setTimeout(() => {
-        toast.style.opacity = "0";
-        toast.style.transform = "translateY(8px)";
-        setTimeout(() => toast.remove(), 250);
-    }, TOAST_DURATION);
+    const timer = setTimeout(() => dismiss(toast), TOAST_DURATION);
+
+    function dismiss(el) {
+        clearTimeout(timer);
+        el.style.opacity = "0";
+        el.style.transform = "translateX(16px)";
+        setTimeout(() => el.remove(), 280);
+    }
 }
